@@ -1,6 +1,19 @@
 const form = document.querySelector('#my-form');
 const ul = document.querySelector('#list');
 
+const div = document.createElement('div');
+div.className = 'd-grid gap-2 d-md-flex justify-content-md-end';
+
+const editBtn = document.createElement('button');
+editBtn.setAttribute('type', 'button');
+editBtn.className = 'btn btn-warning';
+editBtn.appendChild(document.createTextNode('Edit'));
+
+const deleteBtn = document.createElement('button');
+deleteBtn.setAttribute('type', 'button');
+deleteBtn.className = 'btn btn-danger';
+deleteBtn.appendChild(document.createTextNode('Delete'));
+
 const alertSection = document.querySelector('#alert-section');
 
 const alertmsg = document.createElement('div');
@@ -22,27 +35,13 @@ function storeData(e) {
   const expense = { amount, category, description };
 
   if (amount === '' || category === null) {
-    // console.log('Enter an Amount & Choose a category');
-    alertmsg.className = 'alert alert-danger';
-    alertmsg.textContent = 'Enter specified field!';
-
-    setTimeout(() => {
-      alertmsg.className = 'alert';
-      alertmsg.textContent = '';
-    }, 3000);
+    makeAlert('Enter all specified field!', 'alert alert-danger');
   } else {
     localStorage.setItem(++key, JSON.stringify(expense));
 
     addToList(expense);
     form.reset();
-    // console.log('Data Inserted to Local Storage');
-    alertmsg.className = 'alert alert-success';
-    alertmsg.textContent = 'Data stored Successfully!';
-
-    setTimeout(() => {
-      alertmsg.className = 'alert';
-      alertmsg.textContent = '';
-    }, 3000);
+    makeAlert('Data stored successfully!', 'alert alert-success');
   }
 }
 
@@ -55,26 +54,11 @@ function addToList(expense) {
     `Rs: ${expense.amount} - ${expense.category} - ${expense.description}`
   );
 
-  const div = document.createElement('div');
-  div.className = 'd-grid gap-2 d-md-flex justify-content-md-end';
-
-  const editBtn = document.createElement('button');
-  editBtn.setAttribute('type', 'button');
-  editBtn.className = 'btn btn-warning';
-  editBtn.appendChild(document.createTextNode('Edit'));
-
-  const deleteBtn = document.createElement('button');
-  deleteBtn.setAttribute('type', 'button');
-  deleteBtn.className = 'btn btn-danger';
-  deleteBtn.appendChild(document.createTextNode('Delete'));
-
   div.appendChild(editBtn);
   div.appendChild(deleteBtn);
 
   li.appendChild(text);
   li.appendChild(div);
-
-//   console.log(li);
 
   ul.appendChild(li);
 
@@ -92,8 +76,19 @@ function addToList(expense) {
   deleteBtn.onclick = () => {
     localStorage.removeItem(key);
     ul.removeChild(li);
+    makeAlert('Data removed successfully!', 'alert alert-success');
     if (!ul.firstElementChild) {
       document.querySelector('#list-section').className = 'invisible';
     }
   };
+}
+
+function makeAlert(msg, alertType) {
+  alertmsg.className = alertType;
+  alertmsg.textContent = msg;
+
+  setTimeout(() => {
+    alertmsg.className = 'alert';
+    alertmsg.textContent = '';
+  }, 3000);
 }
